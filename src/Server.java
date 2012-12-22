@@ -6,6 +6,7 @@ public class Server implements Runnable {
 	private	Socket client;
 	private DataOutputStream out;
 	private DataInputStream in;
+	private Window parentWindow;
 	
 	Server(int port){
 		this.client = null;
@@ -26,13 +27,16 @@ public class Server implements Runnable {
 	public void run(){
 		try{
 			while(true){
-				String m;
-				m = in.readUTF();
-				out.writeUTF(m);
-				System.out.println("服务器收到: " + m);
+				String msg;
+				msg = in.readUTF();
+				this.parentWindow.AppendInfo(msg);
 				Thread.sleep(500);
 			}
 		}catch(InterruptedException e){}
 		catch(IOException e){}
+	}
+
+	void setParentWindow(Window parent){
+		this.parentWindow = parent;
 	}
 }

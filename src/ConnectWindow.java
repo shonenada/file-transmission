@@ -3,7 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class ConnectWindow extends DFrame{
-	
+
 	String host;
 	JTextField hostField;
 	JLabel hostLabel;
@@ -15,29 +15,38 @@ public class ConnectWindow extends DFrame{
 		super("Connect",300,150);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.target = target;
-		InitLayout();
 	}
 
 	void InitLayout(){
 		setLayout(null);
-		hostLabel = new JLabel("Server IP: ");
-		hostField = new JTextField();
-		confirmBtn = new JButton("Connect");
-		cancelBtn = new JButton("Cancel");
-		hostLabel.setBounds(10, 20, 80, 30);
-		hostField.setBounds(100, 20, 150, 30);
-		confirmBtn.setBounds(20, 70, 100, 30);
-		cancelBtn.setBounds(150, 70, 100, 30);
 
-		confirmBtn.addActionListener( new ConfirmBtnHandler(this) );
-		cancelBtn.addActionListener( new CancelBtnHandler(this) );
+		this.hostLabel = new JLabel("Server IP: ");
+		this.hostField = new JTextField("localhost");
+		this.confirmBtn = new JButton("Connect");
+		this.cancelBtn = new JButton("Cancel");
 
-		this.add(hostLabel);
-		this.add(hostField);
-		this.add(confirmBtn);
-		this.add(cancelBtn);
+		this.hostLabel.setBounds(10, 20, 80, 30);
+		this.hostField.setBounds(100, 20, 150, 30);
+		this.confirmBtn.setBounds(20, 70, 100, 30);
+		this.cancelBtn.setBounds(150, 70, 100, 30);
+
+		this.confirmBtn.addActionListener( new ConfirmBtnHandler(this) );
+		this.cancelBtn.addActionListener( new CancelBtnHandler(this) );
+
+		this.add(this.hostLabel);
+		this.add(this.hostField);
+		this.add(this.confirmBtn);
+		this.add(this.cancelBtn);
 	}
 
+	void ConnetServer(){
+		this.host = this.hostField.getText();
+		if ( this.host.equals("") || this.host == null){
+			target.AppendInfo("Please Input the Server IP.");
+		}else{
+			this.target.ConnectToServer( this.host );
+		}
+	}
 }
 
 class ConfirmBtnHandler implements ActionListener{
@@ -50,8 +59,8 @@ class ConfirmBtnHandler implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e){
-		target.host = this.target.hostField.getText();
-
+		this.target.ConnetServer();
+		this.target.dispose();
 	}
 }
 
@@ -62,7 +71,7 @@ class CancelBtnHandler implements ActionListener{
 	CancelBtnHandler(ConnectWindow target){
 		this.target = target;
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e){
 		this.target.dispose();

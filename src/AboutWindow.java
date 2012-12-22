@@ -12,7 +12,6 @@ class AboutWindow extends DFrame{
 	
 	AboutWindow(){
 		super("About ",300,200);
-		InitLayout();
 		validate();
 	}
 	

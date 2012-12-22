@@ -128,10 +128,28 @@ public class Window extends DFrame {
 
 	void InitServer(){
 		server = new Server(this.port);
+		server.setParentWindow(this);
 		srv = new Thread(server);
 		srv.start();
 	}
 
+	void ConnectToServer(String host){
+		client = new Client(host, port);
+		client.setParentWindow(this);
+		client.Connect();
+		this.changeConnState(this.CONN_STATE_CONNCTED);
+		cli = new Thread(client);
+		cli.start();
+	}
+
+	void DisConnect(){
+		this.AppendInfo("Disconnecting from the server.");
+		this.cli = null;
+		this.client = null;
+		this.changeConnState(this.CONN_STATE_DISCONNCT);
+		this.AppendInfo("Disconnecting from the server completed!");
+	}
+	
 	void clearText(){
 		bottomText.setText("");
 	}
@@ -139,6 +157,10 @@ public class Window extends DFrame {
 	void changeConnState(int x){
 		this.connState = x;
 		this.updateConnItemState();
+	}
+
+	String getBottomText(){
+		return this.bottomText.getText();
 	}
 
 	void updateConnItemState(){
@@ -150,6 +172,11 @@ public class Window extends DFrame {
 			this.fileMenuItems[this.FILE_ITEM_CONNECT].setEnabled(false);
 			this.fileMenuItems[this.FILE_ITEM_DISCONNECT].setEnabled(true);
 		}
+	}
+
+	void AppendInfo(String info){
+		String temp = this.topText.getText();
+		this.topText.setText(temp+"\n"+info);
 	}
 
 	JMenuItem getFileItem(int i){

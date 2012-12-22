@@ -1,23 +1,35 @@
 import java.io.*;
 import java.net.*;
 
-public class Client{
+public class Client implements Runnable{
 	
-	private String s;
+	private String host;
+	private int port;
 	private Socket client;
 	private DataInputStream in;
-	private DataOutputStream out;;
+	private DataOutputStream out;
+	private Window parentWindow;
 	
 	Client(String host, int port){
-		s = null;
-		in = null;
-		out = null;
+		this.host = host;
+		this.port = port;
+		this.in = null;
+		this.out = null;
+	}
+
+	void Connect(){
 		try{
-			this.client = new Socket(host, port);
-			in = new DataInputStream(this.client.getInputStream());
-			out = new DataOutputStream(this.client.getOutputStream());
+			this.parentWindow.AppendInfo("Connecting to server: " + host + ":" + port );
+			this.client = new Socket(this.host, this.port);
+			this.in = new DataInputStream(this.client.getInputStream());
+			this.out = new DataOutputStream(this.client.getOutputStream());
+			InetAddress address = InetAddress.getLocalHost();
+			this.Send("Connected by : " + address.toString());
+			this.parentWindow.AppendInfo("Connecting to server: " + host + ":" + port +" completed!");
 		}
-		catch (IOException e){}
+		catch (IOException e){
+			this.parentWindow.AppendInfo("Cannot connect to the server!");
+		}
 	}
 	
 	void Send(String info){
@@ -29,12 +41,23 @@ public class Client{
 	}
 	
 	String Receive(){
-		String info = null;
 		try{
+			String info = null;
 			info = this.in.readUTF();
+			return info;
 		}catch(IOException e){
-			
+			return null;
 		}
-		return info;
+	}
+
+	void setParentWindow(Window parent){
+		this.parentWindow = parent;
+	}
+
+	@Override
+	public void run(){
+		while(true){
+			this.parentWindow.AppendInfo(this.Receive());
+		}
 	}
 }

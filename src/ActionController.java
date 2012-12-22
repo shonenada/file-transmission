@@ -31,19 +31,22 @@ public class ActionController implements ActionListener{
 		
 		// Show About window
 		if ( src == target.getHelpItem(Window.HELP_ITEM_ABOUT) ){
-			AboutWindow aboutWin = new AboutWindow();
-			aboutWin.showWin();
+			new AboutWindow();
 		}
 
 		// Connect to a server
 		if( src == target.getFileItem(Window.FILE_ITEM_CONNECT) ){
-			ConnectWindow connWin = new ConnectWindow(target);
-			connWin.showWin();
+			new ConnectWindow(target);
 		}
 
 		// Disconnect
 		if ( src == target.getFileItem(Window.FILE_ITEM_DISCONNECT) ){
+			target.DisConnect();
+		}
 
+		// Send, send info to remote server.
+		if ( src == target.getSendBtn() ){
+			this.target.client.Send(this.target.getBottomText());
 		}
 
 		// Cancel, close the window .
@@ -51,6 +54,7 @@ public class ActionController implements ActionListener{
 			target.dispose();
 			System.exit(0);
 		}
+
 	}	
 	
 	public void addListen(JMenuItem o){
