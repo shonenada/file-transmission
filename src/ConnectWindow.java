@@ -1,22 +1,31 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.net.*;
 
 public class ConnectWindow extends DFrame{
 
 	String host;
-	JTextField hostField;
+	String name;
 	JLabel hostLabel;
+	JTextField hostField;
 	JButton confirmBtn;
 	JButton cancelBtn;
 	Window target;
+
 
 	ConnectWindow(Window target){
 		super("Connect",300,150);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.target = target;
+		try{
+			InetAddress local = InetAddress.getLocalHost();
+			this.name = local.getHostName().toString();
+		}catch(UnknownHostException e){}
+
 	}
 
+	@Override
 	void InitLayout(){
 		setLayout(null);
 
@@ -25,7 +34,7 @@ public class ConnectWindow extends DFrame{
 		this.confirmBtn = new JButton("Connect");
 		this.cancelBtn = new JButton("Cancel");
 
-		this.hostLabel.setBounds(10, 20, 80, 30);
+		this.hostLabel.setBounds(10, 20, 100, 30);
 		this.hostField.setBounds(100, 20, 150, 30);
 		this.confirmBtn.setBounds(20, 70, 100, 30);
 		this.cancelBtn.setBounds(150, 70, 100, 30);
@@ -44,6 +53,7 @@ public class ConnectWindow extends DFrame{
 		if ( this.host.equals("") || this.host == null){
 			target.AppendInfo("Please Input the Server IP.");
 		}else{
+			this.target.setUsername(this.name);
 			this.target.ConnectToServer( this.host );
 		}
 	}

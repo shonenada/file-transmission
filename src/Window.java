@@ -29,6 +29,8 @@ public class Window extends DFrame {
 	
 	private JTextArea topText;
 	private JTextArea bottomText;
+	JScrollPane topPane;
+	JScrollPane bottomPane;
 	
 	private JLabel stateLabel;
 	
@@ -38,6 +40,7 @@ public class Window extends DFrame {
 	ActionController actionhandler;
 
 	private int connState;
+	private String username;
 	
 	Server server;
 	Client client;
@@ -45,8 +48,10 @@ public class Window extends DFrame {
 	Thread cli;
 	int port;
 
+	
+
 	Window(String name, int port){
-		super(name, 300, 440);
+		super(name, 350, 460);
 		this.port = port;
 		this.connState=this.CONN_STATE_DISCONNCT;
 		actionhandler = new ActionController(this);
@@ -57,6 +62,7 @@ public class Window extends DFrame {
 		InitServer();
 	}
 	
+	@Override
 	void InitLayout(){
 		
 		this.setLayout(null);
@@ -65,15 +71,17 @@ public class Window extends DFrame {
 		this.bottomText = new JTextArea();
 		this.sendBtn = new JButton("Send");
 		this.cancelBtn = new JButton("Cancel");
-		
-		this.topText.setBounds(0,0,300,150);
+		this.topPane = new JScrollPane(topText);
+		this.bottomPane = new JScrollPane(bottomText);
+
+		this.topPane.setBounds(10,10,330,200);
 		this.topText.setEditable(false);
-		this.bottomText.setBounds(0,160,300,150);
-		this.sendBtn.setBounds(100, 320, 80, 30);
-		this.cancelBtn.setBounds(190, 320, 100, 30);
+		this.bottomPane.setBounds(10,230,330,100);
+		this.sendBtn.setBounds(100, 360, 80, 30);
+		this.cancelBtn.setBounds(190, 360, 100, 30);
 		
-		add(this.topText);
-		add(this.bottomText);
+		add(this.topPane);
+		add(this.bottomPane);
 		add(this.sendBtn);
 		add(this.cancelBtn);
 		
@@ -129,6 +137,7 @@ public class Window extends DFrame {
 	void InitServer(){
 		server = new Server(this.port);
 		server.setParentWindow(this);
+		server.start();
 		srv = new Thread(server);
 		srv.start();
 	}
@@ -177,6 +186,14 @@ public class Window extends DFrame {
 	void AppendInfo(String info){
 		String temp = this.topText.getText();
 		this.topText.setText(temp+"\n"+info);
+	}
+
+	void setUsername(String name){
+		this.username = name;
+	}
+
+	String getUsername(){
+		return this.username;
 	}
 
 	JMenuItem getFileItem(int i){

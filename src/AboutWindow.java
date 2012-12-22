@@ -15,6 +15,7 @@ class AboutWindow extends DFrame{
 		validate();
 	}
 	
+	@Override
 	void InitLayout(){
 		setLayout(null);
 		

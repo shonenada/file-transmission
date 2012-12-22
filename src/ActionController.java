@@ -47,6 +47,7 @@ public class ActionController implements ActionListener{
 		// Send, send info to remote server.
 		if ( src == target.getSendBtn() ){
 			this.target.client.Send(this.target.getBottomText());
+			this.target.clearText();
 		}
 
 		// Cancel, close the window .

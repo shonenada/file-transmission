@@ -23,18 +23,17 @@ public class Client implements Runnable{
 			this.client = new Socket(this.host, this.port);
 			this.in = new DataInputStream(this.client.getInputStream());
 			this.out = new DataOutputStream(this.client.getOutputStream());
-			InetAddress address = InetAddress.getLocalHost();
-			this.Send("Connected by : " + address.toString());
 			this.parentWindow.AppendInfo("Connecting to server: " + host + ":" + port +" completed!");
 		}
 		catch (IOException e){
 			this.parentWindow.AppendInfo("Cannot connect to the server!");
 		}
 	}
-	
+
 	void Send(String info){
 		try {
-			this.out.writeUTF(info);
+			this.parentWindow.AppendInfo("You said: " + info);
+			this.out.writeUTF(this.parentWindow.getUsername() + " said: " + info);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

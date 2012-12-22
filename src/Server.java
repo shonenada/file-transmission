@@ -7,9 +7,15 @@ public class Server implements Runnable {
 	private DataOutputStream out;
 	private DataInputStream in;
 	private Window parentWindow;
+	private String remoteIP;
+	private int port;
 	
 	Server(int port){
 		this.client = null;
+		this.port = port;
+	}
+
+	public void start(){
 		try{
 			this.server = new ServerSocket(port);
 		}catch(IOException e1){
@@ -17,6 +23,9 @@ public class Server implements Runnable {
 		}
 		try{
 			this.client = this.server.accept();
+			remoteIP = this.client.getInetAddress().toString().replace("/", "");
+			this.parentWindow.AppendInfo("Connected by: " + remoteIP);
+			this.parentWindow.ConnectToServer(remoteIP);
 			in = new DataInputStream(client.getInputStream());
 			out = new DataOutputStream(client.getOutputStream());
 		}
