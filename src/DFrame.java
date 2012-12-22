@@ -1,11 +1,10 @@
 import java.awt.*;
 import javax.swing.*;
-
-import java.awt.Toolkit;
-
+ import java.awt.Toolkit;
+ 
 public abstract class DFrame extends JFrame{
-
-	/**
+ 
+  /**
 	 * 窗口尺寸参数
 	 * WIN_HEIGHT	integer	窗口高度
 	 * WIN_WIDTH	integer	窗口宽度
@@ -24,10 +23,10 @@ public abstract class DFrame extends JFrame{
 		showWin();
 		InitLayout();
 		validate();
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-
+ 
 	
 	int getWinWidth(){
 		return this.WIN_WIDTH;
@@ -73,7 +72,7 @@ public abstract class DFrame extends JFrame{
 	static int getMidHorizontal(int width){
 		return (screenSize.width-width)/2;
 	}
-
+ 
 	static int getMidVertical(int height){
 		return (screenSize.height-height)/2;
 	}
@@ -84,5 +83,5 @@ public abstract class DFrame extends JFrame{
 	static void print(int s){
 		System.out.println(s);
 	}
-
+ 
 }

@@ -23,19 +23,32 @@ public class ActionController implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 		
+		// Exit the window
 		if ( src == target.getFileItem(Window.FILE_ITEM_EXIT) ){
 			target.dispose();
 			System.exit(0);
 		}
 		
+		// Show About window
 		if ( src == target.getHelpItem(Window.HELP_ITEM_ABOUT) ){
-			new About();
+			new AboutWindow();
 		}
-		
+
+		// Connect to a server
+		if( src == target.getFileItem(Window.FILE_ITEM_CONNECT) ){
+			new ConnectWindow(target);
+		}
+
+		// Disconnect
+		if ( src == target.getFileItem(Window.FILE_ITEM_DISCONNECT) ){
+
+		}
+
+		// Cancel, close the window .
 		if ( src == target.getCancelBtn() ){
-			target.clearText();
+			target.dispose();
+			System.exit(0);
 		}
-		
 	}	
 	
 	public void addListen(JMenuItem o){

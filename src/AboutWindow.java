@@ -3,15 +3,15 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-class About extends DFrame implements ActionListener{
+class AboutWindow extends DFrame implements ActionListener{
 	
 	JLabel Label_title;
 	JLabel Label_author;
 	JLabel Label_infor;
 	JButton Btn_close;
 	
-	About(){
-		super("关于",300,200);
+	AboutWindow(){
+		super("About ",300,200);
 		InitLayout();
 		validate();
 	}

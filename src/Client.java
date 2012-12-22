@@ -1,19 +1,19 @@
 import java.io.*;
 import java.net.*;
 
-public class Client {
+public class Client{
 	
 	private String s;
 	private Socket client;
 	private DataInputStream in;
 	private DataOutputStream out;;
 	
-	Client(int port){
+	Client(String host, int port){
 		s = null;
 		in = null;
 		out = null;
 		try{
-			this.client = new Socket("localhost", port);
+			this.client = new Socket(host, port);
 			in = new DataInputStream(this.client.getInputStream());
 			out = new DataOutputStream(this.client.getOutputStream());
 		}

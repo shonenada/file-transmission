@@ -11,7 +11,12 @@ public class Window extends DFrame {
 	final static int FILE_ITEM_DISCONNECT=1;
 	final static int FILE_ITEM_EXIT=2;
 	final static int HELP_ITEM_ABOUT=0;
-		
+	final static int SRV_STATE_RUN=1;
+	final static int SRV_STATE_STOP=0;
+	final static int CONN_STATE_CONNCTED=1;
+	final static int CONN_STATE_DISCONNCT=0;
+	final static int CONN_PORT=4331;
+
 	private JMenuBar menubar;
 	
 	private JMenu file_menu;
@@ -31,20 +36,25 @@ public class Window extends DFrame {
 	private JButton cancel_btn;
 	
 	ActionController actionhandler;
+
+	private int conn_state;
 	
 	Server server;
 	Client client;
-	
-	
+	Thread srv;
+	Thread cli;
+	int port;
+
 	Window(String name, int port){
 		super(name, 300, 440);
+		this.port = port;
+		this.conn_state=this.CONN_STATE_DISCONNCT;
 		actionhandler = new ActionController(this);
-		client = new Client(port);
-//		server = new Server(port);
 		InitMenu();
 		InitActionListener();
 		actionhandler.updateObserver();
 		validate();
+		InitServer();
 	}
 	
 	void InitLayout(){
@@ -60,7 +70,7 @@ public class Window extends DFrame {
 		this.top_text.setEditable(false);
 		this.bottom_text.setBounds(0,160,300,150);
 		this.send_btn.setBounds(100, 320, 80, 30);
-		this.cancel_btn.setBounds(190, 320, 80, 30);
+		this.cancel_btn.setBounds(190, 320, 100, 30);
 		
 		add(this.top_text);
 		add(this.bottom_text);
@@ -98,6 +108,8 @@ public class Window extends DFrame {
 		this.menubar.add(this.file_menu);
 		this.menubar.add(this.help_menu);
 		
+		this.updateConnItemState();
+
 		this.setJMenuBar(menubar);
 		
 	}
@@ -113,11 +125,33 @@ public class Window extends DFrame {
 			actionhandler.addListen(this.help_menu_items[i]);
 		}
 	}
+
+	void InitServer(){
+		server = new Server(this.port);
+		srv = new Thread(server);
+		//srv.start();
+	}
 	
 	void clearText(){
 		bottom_text.setText("");
 	}
-	
+
+	void changeConnState(int x){
+		this.conn_state = x;
+		this.updateConnItemState();
+	}
+
+	void updateConnItemState(){
+		if ( this.conn_state == this.CONN_STATE_DISCONNCT ){
+			this.file_menu_items[this.FILE_ITEM_CONNECT].setEnabled(true);
+			this.file_menu_items[this.FILE_ITEM_DISCONNECT].setEnabled(false);
+		}
+		else if ( this.conn_state == this.CONN_STATE_CONNCTED ){
+			this.file_menu_items[this.FILE_ITEM_CONNECT].setEnabled(false);
+			this.file_menu_items[this.FILE_ITEM_DISCONNECT].setEnabled(true);
+		}
+	}
+
 	JMenuItem getFileItem(int i){
 		return this.file_menu_items[i];
 	}
@@ -137,6 +171,8 @@ public class Window extends DFrame {
 	JButton getCancelBtn(){
 		return this.cancel_btn;
 	}
+
+
 	
 }
 
