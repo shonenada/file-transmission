@@ -46,8 +46,9 @@ class AboutWindow extends DFrame implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		this.hideWin();
-		this.dispose();
+		if ( e.getSource() == Btn_close){
+			this.dispose();
+		}
 	}
 	
 }

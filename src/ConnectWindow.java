@@ -1,36 +1,39 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import javax.swing.*;
 
 public class ConnectWindow extends DFrame{
 	
-	private String host;
-	private JTextField host_field;
-	private JLabel host_label;
-	private JButton confirm_btn;
-	private JButton cancel_btn;
-	private Window target;
-
-	private ActionListener confirmBtnListener = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			System.out.println("connect");
-		}
-	};
-
-	private ActionListener cancelBtnListener = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			System.out.println("cancel");
-		}
-	};
+	String host;
+	JTextField host_field;
+	JLabel host_label;
+	JButton confirm_btn;
+	JButton cancel_btn;
+	ActionListener confirmBtnListener;
+	ActionListener cancelBtnListener;
 
 	ConnectWindow(Window target){
 		super("Connect",300,150);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.target = target;
+	//	this.target = target;
+		InitAction();
 		InitLayout();
+	}
+
+	void InitAction(){
+		this.confirmBtnListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("connect");
+			}
+		};
+
+		this.cancelBtnListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("cancel");
+			}
+		};
 	}
 
 	void InitLayout(){
@@ -44,14 +47,13 @@ public class ConnectWindow extends DFrame{
 		confirm_btn.setBounds(20, 70, 100, 30);
 		cancel_btn.setBounds(150, 70, 100, 30);
 
+		confirm_btn.addActionListener(this.confirmBtnListener);
+		cancel_btn.addActionListener(this.cancelBtnListener);
+
 		this.add(host_label);
 		this.add(host_field);
 		this.add(confirm_btn);
 		this.add(cancel_btn);
-
-		confirm_btn.addActionListener(confirmBtnListener);
-		cancel_btn.addActionListener(cancelBtnListener);
-
 	}
 
 }

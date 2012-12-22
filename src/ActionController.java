@@ -31,12 +31,14 @@ public class ActionController implements ActionListener{
 		
 		// Show About window
 		if ( src == target.getHelpItem(Window.HELP_ITEM_ABOUT) ){
-			new AboutWindow();
+			AboutWindow aboutWin = new AboutWindow();
+			aboutWin.showWin();
 		}
 
 		// Connect to a server
 		if( src == target.getFileItem(Window.FILE_ITEM_CONNECT) ){
-			new ConnectWindow(target);
+			ConnectWindow connWin = new ConnectWindow(target);
+			connWin.showWin();
 		}
 
 		// Disconnect
