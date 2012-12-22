@@ -3,12 +3,12 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-class AboutWindow extends DFrame implements ActionListener{
+class AboutWindow extends DFrame{
 	
-	JLabel Label_title;
-	JLabel Label_author;
-	JLabel Label_infor;
-	JButton Btn_close;
+	JLabel titleLabel;
+	JLabel authorLabel;
+	JLabel inforLabel;
+	JButton closeBtn;
 	
 	AboutWindow(){
 		super("About ",300,200);
@@ -19,36 +19,42 @@ class AboutWindow extends DFrame implements ActionListener{
 	void InitLayout(){
 		setLayout(null);
 		
-		Label_title = new JLabel("<html><font size=+2>About</font></html>", JLabel.CENTER);
-		Label_author = new JLabel("Author: Lyd.", JLabel.LEFT);
-		Label_infor = new JLabel("<html><p>Copyright by Lyd</p></html>", JLabel.LEFT);
-		Btn_close = new JButton("CLOSE");
+		titleLabel = new JLabel("<html><font size=+2>About</font></html>", JLabel.CENTER);
+		authorLabel = new JLabel("Author: Lyd.", JLabel.LEFT);
+		inforLabel = new JLabel("<html><p>Copyright by Lyd</p></html>", JLabel.LEFT);
+		closeBtn = new JButton("CLOSE");
 		
-		add(Label_title);
-		add(Label_author);
-		add(Label_infor);
-		add(Btn_close);
+		add(titleLabel);
+		add(authorLabel);
+		add(inforLabel);
+		add(closeBtn);
 		
-		Label_title.setBounds(90,5,100,40);
-		Label_title.setVerticalAlignment(JLabel.TOP);
+		titleLabel.setBounds(90,5,100,40);
+		titleLabel.setVerticalAlignment(JLabel.TOP);
 		
-		Label_author.setBounds(5,50,300,25);
-		Label_author.setVerticalAlignment(JLabel.TOP);
+		authorLabel.setBounds(5,50,300,25);
+		authorLabel.setVerticalAlignment(JLabel.TOP);
 		
-		Label_infor.setBounds(5,85,300,25);
-		Label_infor.setVerticalAlignment(JLabel.TOP);
+		inforLabel.setBounds(5,85,300,25);
+		inforLabel.setVerticalAlignment(JLabel.TOP);
 		
-		Btn_close.setBounds(100,120,80,30);
-		Btn_close.setVerticalAlignment(JButton.TOP);
-		Btn_close.addActionListener(this);
+		closeBtn.setBounds(100,120,80,30);
+		closeBtn.setVerticalAlignment(JButton.TOP);
+		closeBtn.addActionListener( new closeBtnHandler(this) );
 		
 	}
-	
+}
+
+class closeBtnHandler implements ActionListener{
+
+	AboutWindow target;
+
+	closeBtnHandler(AboutWindow target){
+		this.target = target;
+	}
+
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		if ( e.getSource() == Btn_close){
-			this.dispose();
-		}
+	public void actionPerformed(ActionEvent e){
+		this.target.dispose();
 	}
-	
 }

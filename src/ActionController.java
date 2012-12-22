@@ -6,17 +6,17 @@ import javax.swing.*;
 public class ActionController implements ActionListener{
 	
 	private Window target;
-	private JMenuItem[] MenuItem_observers;
-	private JButton[] Button_observers;
-	private int Menu_o_i;
-	private int Btn_o_i;
+	private JMenuItem[] menuItemObservers;
+	private JButton[] buttonObservers;
+	private int menuIndex;
+	private int btnIndex;
 	
 	ActionController(Window t){
 		this.target = t;
-		this.MenuItem_observers = new JMenuItem[100];
-		this.Button_observers = new JButton[100];
-		this.Menu_o_i=0;
-		this.Btn_o_i=0;
+		this.menuItemObservers = new JMenuItem[100];
+		this.buttonObservers = new JButton[100];
+		this.menuIndex=0;
+		this.btnIndex=0;
 		
 	}
 	
@@ -54,23 +54,21 @@ public class ActionController implements ActionListener{
 	}	
 	
 	public void addListen(JMenuItem o){
-		this.MenuItem_observers[this.Menu_o_i++] = o;
+		this.menuItemObservers[this.menuIndex++] = o;
 	}
 	
 	public void addListen(JButton o){
-		this.Button_observers[this.Btn_o_i++] = o;
+		this.buttonObservers[this.btnIndex++] = o;
 	}
 	
 	public void updateObserver(){
 		int i;
-		for(i=0;i<this.Menu_o_i;i++){
-			this.MenuItem_observers[i].addActionListener(this);
+		for(i=0;i<this.menuIndex;i++){
+			this.menuItemObservers[i].addActionListener(this);
 		}
-		for(i=0;i<this.Btn_o_i;i++){
-			this.Button_observers[i].addActionListener(this);
+		for(i=0;i<this.btnIndex;i++){
+			this.buttonObservers[i].addActionListener(this);
 		}
 	}
-	
-	
-	
+
 }

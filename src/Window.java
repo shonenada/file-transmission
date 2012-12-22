@@ -19,25 +19,25 @@ public class Window extends DFrame {
 
 	private JMenuBar menubar;
 	
-	private JMenu file_menu;
-	private JMenu tool_menu;
-	private JMenu help_menu;
+	private JMenu fileMenu;
+	private JMenu toolMenu;
+	private JMenu helpMenu;
 	
-	private JMenuItem[] file_menu_items;
-	private JMenuItem[] tool_menu_items;
-	private JMenuItem[] help_menu_items;
+	private JMenuItem[] fileMenuItems;
+	private JMenuItem[] toolMenuItems;
+	private JMenuItem[] helpMenuItems;
 	
-	private JTextArea top_text;
-	private JTextArea bottom_text;
+	private JTextArea topText;
+	private JTextArea bottomText;
 	
-	private JLabel state_label;
+	private JLabel stateLabel;
 	
-	private JButton send_btn;
-	private JButton cancel_btn;
+	private JButton sendBtn;
+	private JButton cancelBtn;
 	
 	ActionController actionhandler;
 
-	private int conn_state;
+	private int connState;
 	
 	Server server;
 	Client client;
@@ -48,7 +48,7 @@ public class Window extends DFrame {
 	Window(String name, int port){
 		super(name, 300, 440);
 		this.port = port;
-		this.conn_state=this.CONN_STATE_DISCONNCT;
+		this.connState=this.CONN_STATE_DISCONNCT;
 		actionhandler = new ActionController(this);
 		InitMenu();
 		InitActionListener();
@@ -61,21 +61,21 @@ public class Window extends DFrame {
 		
 		this.setLayout(null);
 		
-		this.top_text = new JTextArea();
-		this.bottom_text = new JTextArea();
-		this.send_btn = new JButton("Send");
-		this.cancel_btn = new JButton("Cancel");
+		this.topText = new JTextArea();
+		this.bottomText = new JTextArea();
+		this.sendBtn = new JButton("Send");
+		this.cancelBtn = new JButton("Cancel");
 		
-		this.top_text.setBounds(0,0,300,150);
-		this.top_text.setEditable(false);
-		this.bottom_text.setBounds(0,160,300,150);
-		this.send_btn.setBounds(100, 320, 80, 30);
-		this.cancel_btn.setBounds(190, 320, 100, 30);
+		this.topText.setBounds(0,0,300,150);
+		this.topText.setEditable(false);
+		this.bottomText.setBounds(0,160,300,150);
+		this.sendBtn.setBounds(100, 320, 80, 30);
+		this.cancelBtn.setBounds(190, 320, 100, 30);
 		
-		add(this.top_text);
-		add(this.bottom_text);
-		add(this.send_btn);
-		add(this.cancel_btn);
+		add(this.topText);
+		add(this.bottomText);
+		add(this.sendBtn);
+		add(this.cancelBtn);
 		
 	}
 	
@@ -85,28 +85,28 @@ public class Window extends DFrame {
 		
 		this.menubar = new JMenuBar();
 		
-		this.file_menu = new JMenu("File");
-		this.tool_menu = new JMenu("Tools");
-		this.help_menu = new JMenu("Help");
+		this.fileMenu = new JMenu("File");
+		this.toolMenu = new JMenu("Tools");
+		this.helpMenu = new JMenu("Help");
 		
-		this.file_menu_items = new JMenuItem[this.FILE_ITEM_COUNT];
-		this.file_menu_items[this.FILE_ITEM_CONNECT] = new JMenuItem("Connect");
-		this.file_menu_items[this.FILE_ITEM_DISCONNECT] = new JMenuItem("Disconnect");
-		this.file_menu_items[this.FILE_ITEM_EXIT] = new JMenuItem("Exit");
+		this.fileMenuItems = new JMenuItem[this.FILE_ITEM_COUNT];
+		this.fileMenuItems[this.FILE_ITEM_CONNECT] = new JMenuItem("Connect");
+		this.fileMenuItems[this.FILE_ITEM_DISCONNECT] = new JMenuItem("Disconnect");
+		this.fileMenuItems[this.FILE_ITEM_EXIT] = new JMenuItem("Exit");
 		
-		this.help_menu_items = new JMenuItem[this.HELP_ITEM_COUNT];
-		help_menu_items[this.HELP_ITEM_ABOUT] = new JMenuItem("About");
+		this.helpMenuItems = new JMenuItem[this.HELP_ITEM_COUNT];
+		helpMenuItems[this.HELP_ITEM_ABOUT] = new JMenuItem("About");
 		
-		for (i=0;i<this.file_menu_items.length;i++){
-			this.file_menu.add(this.file_menu_items[i]);
+		for (i=0;i<this.fileMenuItems.length;i++){
+			this.fileMenu.add(this.fileMenuItems[i]);
 		}
 		
-		for (i=0;i<this.help_menu_items.length;i++){
-			this.help_menu.add(this.help_menu_items[i]);
+		for (i=0;i<this.helpMenuItems.length;i++){
+			this.helpMenu.add(this.helpMenuItems[i]);
 		}
 		
-		this.menubar.add(this.file_menu);
-		this.menubar.add(this.help_menu);
+		this.menubar.add(this.fileMenu);
+		this.menubar.add(this.helpMenu);
 		
 		this.updateConnItemState();
 
@@ -116,60 +116,60 @@ public class Window extends DFrame {
 	
 	void InitActionListener(){
 		int i;
-		actionhandler.addListen(send_btn);
-		actionhandler.addListen(cancel_btn);
-		for (i=0;i<this.file_menu_items.length;i++){
-			actionhandler.addListen(this.file_menu_items[i]);
+		actionhandler.addListen(sendBtn);
+		actionhandler.addListen(cancelBtn);
+		for (i=0;i<this.fileMenuItems.length;i++){
+			actionhandler.addListen(this.fileMenuItems[i]);
 		}
-		for (i=0;i<this.help_menu_items.length;i++){
-			actionhandler.addListen(this.help_menu_items[i]);
+		for (i=0;i<this.helpMenuItems.length;i++){
+			actionhandler.addListen(this.helpMenuItems[i]);
 		}
 	}
 
 	void InitServer(){
 		server = new Server(this.port);
 		srv = new Thread(server);
-		//srv.start();
+		srv.start();
 	}
-	
+
 	void clearText(){
-		bottom_text.setText("");
+		bottomText.setText("");
 	}
 
 	void changeConnState(int x){
-		this.conn_state = x;
+		this.connState = x;
 		this.updateConnItemState();
 	}
 
 	void updateConnItemState(){
-		if ( this.conn_state == this.CONN_STATE_DISCONNCT ){
-			this.file_menu_items[this.FILE_ITEM_CONNECT].setEnabled(true);
-			this.file_menu_items[this.FILE_ITEM_DISCONNECT].setEnabled(false);
+		if ( this.connState == this.CONN_STATE_DISCONNCT ){
+			this.fileMenuItems[this.FILE_ITEM_CONNECT].setEnabled(true);
+			this.fileMenuItems[this.FILE_ITEM_DISCONNECT].setEnabled(false);
 		}
-		else if ( this.conn_state == this.CONN_STATE_CONNCTED ){
-			this.file_menu_items[this.FILE_ITEM_CONNECT].setEnabled(false);
-			this.file_menu_items[this.FILE_ITEM_DISCONNECT].setEnabled(true);
+		else if ( this.connState == this.CONN_STATE_CONNCTED ){
+			this.fileMenuItems[this.FILE_ITEM_CONNECT].setEnabled(false);
+			this.fileMenuItems[this.FILE_ITEM_DISCONNECT].setEnabled(true);
 		}
 	}
 
 	JMenuItem getFileItem(int i){
-		return this.file_menu_items[i];
+		return this.fileMenuItems[i];
 	}
 	
 	JMenuItem getToolItem(int i){
-		return this.tool_menu_items[i];
+		return this.toolMenuItems[i];
 	}
 	
 	JMenuItem getHelpItem(int i){
-		return this.help_menu_items[i];
+		return this.helpMenuItems[i];
 	}
 	
 	JButton getSendBtn(){
-		return this.send_btn;
+		return this.sendBtn;
 	}
 	
 	JButton getCancelBtn(){
-		return this.cancel_btn;
+		return this.cancelBtn;
 	}
 
 

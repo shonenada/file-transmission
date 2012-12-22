@@ -19,11 +19,10 @@ public class Server implements Runnable {
 			in = new DataInputStream(client.getInputStream());
 			out = new DataOutputStream(client.getOutputStream());
 		}
-		catch(IOException e){
-			System.out.println("Cannot connect to the server.");
-		}
+		catch(IOException e){}
 	}
 
+	@Override
 	public void run(){
 		try{
 			while(true){
@@ -34,8 +33,6 @@ public class Server implements Runnable {
 				Thread.sleep(500);
 			}
 		}catch(InterruptedException e){}
-		catch(IOException e){
-			System.out.println("Cannot connect to the server.");
-		}
+		catch(IOException e){}
 	}
 }
