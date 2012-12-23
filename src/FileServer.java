@@ -69,40 +69,33 @@ public class FileServer implements Runnable {
 			byte[] msg = new byte[2048];
 			String temp;
 			while(this.isRun){
-				if(msg == null || fileBufferIn == null){
-					this.parentWindow.DisConnect();
-					break;
-				}
-				if ( this.filename == null || this.filename.equals("") ){
-					int chval = this.chooser.showSaveDialog(this.parentWindow);
-					if (chval == JFileChooser.APPROVE_OPTION){
-						temp = this.filename;
-						this.filename = chooser.getSelectedFile().getAbsolutePath();
-					}
-				}
-				File file = new File(filename);
-				this.fileOut = new FileOutputStream(file);
-				this.fileBufferOut = new BufferedOutputStream(fileOut);
 				int num = this.fileBufferIn.read(msg);
-				while ( num != -1 ){
-					fileBufferOut.write(msg, 0, num);
-					fileBufferOut.flush();
-					num = this.fileBufferIn.read(msg);
+				if( ! (num != -1) ) {
+					if ( this.filename == null || this.filename.equals("") ){
+						System.out.println("Server");
+						int chval = this.chooser.showSaveDialog(this.parentWindow);
+						if (chval == JFileChooser.APPROVE_OPTION){
+							temp = this.filename;
+							this.filename = chooser.getSelectedFile().getAbsolutePath();
+						}
+					}
+					File file = new File(filename);
+					this.fileOut = new FileOutputStream(file);
+					this.fileBufferOut = new BufferedOutputStream(fileOut);
+					while ( num != -1 ){
+						fileBufferOut.write(msg, 0, num);
+						fileBufferOut.flush();
+						num = this.fileBufferIn.read(msg);
+					}
+					fileBufferOut.close();
+					fileOut.close();
+					this.fileBufferIn.close();
 				}
-				fileBufferOut.close();
-				fileOut.close();
-				this.fileBufferIn.close();
-				// if (file.exists()){
-				// 	int click = JOptionPane.showConfirmDialog(null, "File is existing, are you sure to replace it ?","File Transmission",JOptionPane.YES_NO_OPTION);
-				// 	if (click == JOptionPane.YES_OPTION){
-				// 		fileBufferIn.write(msg, 0, );
-				// 	}else{
-						
-				// 	}
-				// }
 			}
 		}
-		catch(IOException e){}
+		catch(IOException e){
+			e.printStackTrace();
+		}
 	}
 	
 

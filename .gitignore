@@ -1,6 +1,6 @@
 .class
 .txt
 .log
-src/.class
-src/.log
-src/.txt
+src/*.class
+src/*.log
+src/*.txt
