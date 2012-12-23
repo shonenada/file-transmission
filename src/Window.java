@@ -1,22 +1,24 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import javax.swing.*;
 import java.net.*;
 
 public class Window extends DFrame {
 
 	final static int FILE_ITEM_COUNT=3;
+	final static int TOOL_ITEM_COUNT=1;
 	final static int HELP_ITEM_COUNT=1;
 	final static int FILE_ITEM_CONNECT=0;
 	final static int FILE_ITEM_DISCONNECT=1;
 	final static int FILE_ITEM_EXIT=2;
+	final static int TOOL_ITEM_SENDFILE=0;
 	final static int HELP_ITEM_ABOUT=0;
 	final static int SRV_STATE_RUN=1;
 	final static int SRV_STATE_STOP=0;
 	final static int CONN_STATE_CONNCTED=1;
 	final static int CONN_STATE_DISCONNCT=0;
-	final static int CONN_PORT=4331;
+	final static int CONN_CHAT_PORT=4331;
+	final static int CONN_FILE_PORT=4332;
 
 	private JMenuBar menubar;
 	
@@ -43,17 +45,17 @@ public class Window extends DFrame {
 	private int connState;
 	private String username;
 	
-	Server server;
-	Client client;
-	Thread srv;
-	Thread cli;
-	int port;
+	ChatServer chatServer;
+	ChatClient chatClient;
+	FileServer fileServer;
+	FileClient fileClient;
+	Thread chatSrv;
+	Thread chatCli;
+	Thread fileSrv;
+	Thread fileCli;
 
-	
-
-	Window(String name, int port){
+	Window(String name){
 		super(name, 390, 460);
-		this.port = port;
 		this.connState=this.CONN_STATE_DISCONNCT;
 		actionhandler = new ActionController(this);
 		InitMenu();
@@ -75,11 +77,16 @@ public class Window extends DFrame {
 		this.topPane = new JScrollPane(topText);
 		this.bottomPane = new JScrollPane(bottomText);
 
+		this.topText.setLineWrap(true);
+		this.bottomText.setLineWrap(true);
+
 		this.topPane.setBounds(10,10,370,200);
 		this.topText.setEditable(false);
 		this.bottomPane.setBounds(10,230,370,100);
 		this.sendBtn.setBounds(100, 360, 80, 30);
 		this.cancelBtn.setBounds(190, 360, 100, 30);
+
+		this.sendBtn.setMnemonic(KeyEvent.VK_S);
 		
 		add(this.topPane);
 		add(this.bottomPane);
@@ -103,6 +110,9 @@ public class Window extends DFrame {
 		this.fileMenuItems[this.FILE_ITEM_DISCONNECT] = new JMenuItem("Disconnect");
 		this.fileMenuItems[this.FILE_ITEM_EXIT] = new JMenuItem("Exit");
 		
+		this.toolMenuItems = new JMenuItem[this.TOOL_ITEM_COUNT];
+		this.toolMenuItems[this.TOOL_ITEM_SENDFILE] = new JMenuItem("Send file");
+
 		this.helpMenuItems = new JMenuItem[this.HELP_ITEM_COUNT];
 		helpMenuItems[this.HELP_ITEM_ABOUT] = new JMenuItem("About");
 		
@@ -110,11 +120,16 @@ public class Window extends DFrame {
 			this.fileMenu.add(this.fileMenuItems[i]);
 		}
 		
+		for (i=0;i<this.toolMenuItems.length;i++){
+			this.toolMenu.add(this.toolMenuItems[i]);
+		}
+
 		for (i=0;i<this.helpMenuItems.length;i++){
 			this.helpMenu.add(this.helpMenuItems[i]);
 		}
 		
 		this.menubar.add(this.fileMenu);
+		this.menubar.add(this.toolMenu);
 		this.menubar.add(this.helpMenu);
 		
 		this.updateConnItemState();
@@ -130,6 +145,9 @@ public class Window extends DFrame {
 		for (i=0;i<this.fileMenuItems.length;i++){
 			actionhandler.addListen(this.fileMenuItems[i]);
 		}
+		for (i=0;i<this.toolMenuItems.length;i++){
+			actionhandler.addListen(this.toolMenuItems[i]);
+		}
 		for (i=0;i<this.helpMenuItems.length;i++){
 			actionhandler.addListen(this.helpMenuItems[i]);
 		}
@@ -139,29 +157,35 @@ public class Window extends DFrame {
 		try{
 			InetAddress local = InetAddress.getLocalHost();
 			this.username = local.getHostName().toString();
-		}catch(UnknownHostException e){}
-		server = new Server(this.port);
-		server.setParentWindow(this);
-		server.start();
-		srv = new Thread(server);
-		srv.start();
+		}
+		catch(UnknownHostException e){}
+		chatServer = new ChatServer(Window.CONN_CHAT_PORT);
+		fileServer = new FileServer(Window.CONN_FILE_PORT);
+		chatServer.setParentWindow(this);
+		fileServer.setParentWindow(this);
+		chatServer.start();
+	//	fileServer.start();
+		chatSrv = new Thread(chatServer);
+	//	fileSrv = new Thread(fileServer);
+		chatSrv.start();
+	//	fileSrv.start();
 	}
 
 	void ConnectToServer(String host){
-		client = new Client(host, port);
-		client.setParentWindow(this);
-		client.Connect();
-		this.changeConnState(this.CONN_STATE_CONNCTED);
-		cli = new Thread(client);
-		cli.start();
+		// #TODO 
+		chatClient = new ChatClient(host, Window.CONN_CHAT_PORT);
+		chatClient.setParentWindow(this);
+		chatClient.Connect();
+		chatCli = new Thread(chatClient);
+		chatCli.start();
 	}
 
 	void DisConnect(){
-		this.AppendInfo("Disconnecting from the server.");
-		this.cli = null;
-		this.client = null;
-		this.changeConnState(this.CONN_STATE_DISCONNCT);
-		this.AppendInfo("Disconnecting from the server completed!");
+		if ( this.isConncted() ){
+			this.AppendInfo("Disconnecting from the server.");
+			this.chatClient.DisConnect();
+			this.AppendInfo("Disconnecting from the server completed!");	
+		}
 	}
 	
 	void clearText(){

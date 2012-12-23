@@ -46,8 +46,13 @@ public class ActionController implements ActionListener{
 
 		// Send, send info to remote server.
 		if ( src == target.getSendBtn() ){
-			this.target.client.Send(this.target.getBottomText());
-			this.target.clearText();
+			if ( target.isConncted() ){
+				this.target.chatClient.Send(this.target.getBottomText());
+				this.target.clearText();
+			}else{
+				this.target.AppendInfo("Please connect to a server first");
+			}
+			
 		}
 
 		// Cancel, close the window .

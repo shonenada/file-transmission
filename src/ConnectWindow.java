@@ -37,6 +37,8 @@ public class ConnectWindow extends DFrame{
 		this.confirmBtn.addActionListener( new ConfirmBtnHandler(this) );
 		this.cancelBtn.addActionListener( new CancelBtnHandler(this) );
 
+		getRootPane().setDefaultButton(confirmBtn);
+
 		this.add(this.hostLabel);
 		this.add(this.hostField);
 		this.add(this.confirmBtn);
