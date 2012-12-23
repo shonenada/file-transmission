@@ -56,7 +56,12 @@ public class Client implements Runnable{
 	@Override
 	public void run(){
 		while(true){
-			this.parentWindow.AppendInfo(this.Receive());
+			String reci = this.Receive();
+			if(reci == null){
+				this.parentWindow.DisConnect();
+				break;
+			}
+			this.parentWindow.AppendInfo(reci);
 		}
 	}
 }

@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import java.net.*;
 
 public class Window extends DFrame {
 
@@ -51,7 +52,7 @@ public class Window extends DFrame {
 	
 
 	Window(String name, int port){
-		super(name, 350, 460);
+		super(name, 390, 460);
 		this.port = port;
 		this.connState=this.CONN_STATE_DISCONNCT;
 		actionhandler = new ActionController(this);
@@ -74,9 +75,9 @@ public class Window extends DFrame {
 		this.topPane = new JScrollPane(topText);
 		this.bottomPane = new JScrollPane(bottomText);
 
-		this.topPane.setBounds(10,10,330,200);
+		this.topPane.setBounds(10,10,370,200);
 		this.topText.setEditable(false);
-		this.bottomPane.setBounds(10,230,330,100);
+		this.bottomPane.setBounds(10,230,370,100);
 		this.sendBtn.setBounds(100, 360, 80, 30);
 		this.cancelBtn.setBounds(190, 360, 100, 30);
 		
@@ -135,6 +136,10 @@ public class Window extends DFrame {
 	}
 
 	void InitServer(){
+		try{
+			InetAddress local = InetAddress.getLocalHost();
+			this.username = local.getHostName().toString();
+		}catch(UnknownHostException e){}
 		server = new Server(this.port);
 		server.setParentWindow(this);
 		server.start();
@@ -186,6 +191,10 @@ public class Window extends DFrame {
 	void AppendInfo(String info){
 		String temp = this.topText.getText();
 		this.topText.setText(temp+"\n"+info);
+	}
+
+	boolean isConncted(){
+		return this.connState == this.CONN_STATE_CONNCTED;
 	}
 
 	void setUsername(String name){

@@ -25,7 +25,9 @@ public class Server implements Runnable {
 			this.client = this.server.accept();
 			remoteIP = this.client.getInetAddress().toString().replace("/", "");
 			this.parentWindow.AppendInfo("Connected by: " + remoteIP);
-			this.parentWindow.ConnectToServer(remoteIP);
+			if( !this.parentWindow.isConncted() ){
+				this.parentWindow.ConnectToServer(remoteIP);
+			}
 			in = new DataInputStream(client.getInputStream());
 			out = new DataOutputStream(client.getOutputStream());
 		}
@@ -38,10 +40,13 @@ public class Server implements Runnable {
 			while(true){
 				String msg;
 				msg = in.readUTF();
+				if(msg == null){
+					this.parentWindow.DisConnect();
+					break;
+				}
 				this.parentWindow.AppendInfo(msg);
-				Thread.sleep(500);
 			}
-		}catch(InterruptedException e){}
+		}
 		catch(IOException e){}
 	}
 

@@ -18,11 +18,6 @@ public class ConnectWindow extends DFrame{
 		super("Connect",300,150);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.target = target;
-		try{
-			InetAddress local = InetAddress.getLocalHost();
-			this.name = local.getHostName().toString();
-		}catch(UnknownHostException e){}
-
 	}
 
 	@Override
@@ -53,7 +48,6 @@ public class ConnectWindow extends DFrame{
 		if ( this.host.equals("") || this.host == null){
 			target.AppendInfo("Please Input the Server IP.");
 		}else{
-			this.target.setUsername(this.name);
 			this.target.ConnectToServer( this.host );
 		}
 	}
