@@ -16,51 +16,22 @@ public class FileServer implements Runnable {
 	JFileChooser chooser;
 	String filename;
 
-	FileServer(int filePort){
+	FileServer(Window parent, int filePort){
 		this.fileClient = null;
 		this.filePort = filePort;
+		this.parentWindow = parent;
 		this.chooser = new JFileChooser();
-	}
-
-	public void start(){
 		try{
 			this.fileServer = new ServerSocket(filePort);
 			this.fileClient = this.fileServer.accept();
-			remoteIP = this.fileClient.getInetAddress().toString().replace("/", "");
-			this.parentWindow.AppendInfo("Connected by: " + remoteIP);
 			this.isRun = true;
-			if( !this.parentWindow.isConncted() ){
-				this.parentWindow.ConnectToServer(remoteIP);
-			}
 			fileBufferIn = new BufferedInputStream(fileClient.getInputStream());
 		}
 		catch(IOException e){
 			System.out.println("ERRO: " + e);
 		}
-	}
-
-	public void stop(){
-		try{
-			this.isRun = false;
-			this.fileBufferIn = null;
-			this.fileOut = null;
-			this.fileServer.close();
-		}
-		catch(IOException e){
-			System.out.println("ERROR: " + e);
-		}
-	}
-
-	void restart(){
-		while(true){
-			if ( this.isRun ){
-				this.stop();
-			}
-			if ( !this.isRun ){
-				this.start();
-				break;
-			}
-		}
+		Thread thread = new Thread(this);
+		thread.start();
 	}
 
 	@Override
@@ -68,11 +39,11 @@ public class FileServer implements Runnable {
 		try{
 			byte[] msg = new byte[2048];
 			String temp;
+			int num;
 			while(this.isRun){
-				int num = this.fileBufferIn.read(msg);
-				if( ! (num != -1) ) {
+				num = this.fileBufferIn.read(msg);
+				if( ! (num == -1) ) {
 					if ( this.filename == null || this.filename.equals("") ){
-						System.out.println("Server");
 						int chval = this.chooser.showSaveDialog(this.parentWindow);
 						if (chval == JFileChooser.APPROVE_OPTION){
 							temp = this.filename;
@@ -98,8 +69,4 @@ public class FileServer implements Runnable {
 		}
 	}
 	
-
-	void setParentWindow(Window parent){
-		this.parentWindow = parent;
-	}
 }

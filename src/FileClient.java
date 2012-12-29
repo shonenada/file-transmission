@@ -22,6 +22,7 @@ public class FileClient{
 		this.isConnect = false;
 		this.fileBufferIn = null;
 		this.fileBufferOut = null;
+		this.chooser = new JFileChooser();
 	}
 
 	void Connect(){
@@ -31,12 +32,10 @@ public class FileClient{
 			this.fileBufferIn = new BufferedInputStream(this.fileClient.getInputStream());
 			this.fileBufferOut = new BufferedOutputStream(this.fileClient.getOutputStream());
 			this.isConnect = true;
-			this.parentWindow.changeConnState(Window.CONN_STATE_CONNCTED);
 			this.parentWindow.AppendInfo("Connecting to server: " + this.host + ":" + this.filePort +" completed!");
 		}
 		catch (IOException e){
-			this.parentWindow.AppendInfo("Cannot connect to the server!");
-			this.parentWindow.changeConnState(Window.CONN_STATE_DISCONNCT);
+			this.parentWindow.AppendInfo("Cannot connect to the server!" + this.host + ":" + this.filePort );
 		}
 	}
 
@@ -58,8 +57,12 @@ public class FileClient{
 	}
 
 	void Send(){
+		if ( !this.isConnect ){
+			this.parentWindow.AppendInfo("Please connect to a server first!");
+			return ;
+		}
 		try {
-			int chval = this.chooser.showSaveDialog(this.parentWindow);
+			int chval = this.chooser.showOpenDialog(this.parentWindow);
 			if (chval == JFileChooser.APPROVE_OPTION){
 				this.filename = chooser.getSelectedFile().getAbsolutePath();
 				File file = new File(filename);
@@ -75,7 +78,9 @@ public class FileClient{
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch ( IOException e ){}
+		} catch ( IOException e ){
+			e.printStackTrace();
+		}
 	}
 
 	void setParentWindow(Window parent){

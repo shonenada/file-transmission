@@ -44,7 +44,7 @@ public class Window extends DFrame {
 
 	private int connState;
 	private String username;
-	
+	private String host;
 	ChatServer chatServer;
 	ChatClient chatClient;
 	FileServer fileServer;
@@ -158,17 +158,11 @@ public class Window extends DFrame {
 			InetAddress local = InetAddress.getLocalHost();
 			this.username = local.getHostName().toString();
 		}
-		catch(UnknownHostException e){}
-		chatServer = new ChatServer(Window.CONN_CHAT_PORT);
-		fileServer = new FileServer(Window.CONN_FILE_PORT);
-		chatServer.setParentWindow(this);
-		fileServer.setParentWindow(this);
-		chatServer.start();
-	//	fileServer.start();
-		chatSrv = new Thread(chatServer);
-	//	fileSrv = new Thread(fileServer);
-		chatSrv.start();
-	//	fileSrv.start();
+		catch(UnknownHostException e){
+			e.printStackTrace();
+		}
+		chatServer = new ChatServer(this, Window.CONN_CHAT_PORT);
+		fileServer = new FileServer(this, Window.CONN_FILE_PORT);
 	}
 
 	void ConnectToServer(String host){
@@ -178,6 +172,10 @@ public class Window extends DFrame {
 		chatClient.Connect();
 		chatCli = new Thread(chatClient);
 		chatCli.start();
+
+		fileClient = new FileClient(host, Window.CONN_FILE_PORT);
+		fileClient.setParentWindow(this);
+		fileClient.Connect();
 	}
 
 	void DisConnect(){
@@ -248,7 +246,10 @@ public class Window extends DFrame {
 	JButton getCancelBtn(){
 		return this.cancelBtn;
 	}
-
+    
+    void setHost(String host){
+    	this.host = host ;
+    }
 
 	
 }

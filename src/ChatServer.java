@@ -11,12 +11,10 @@ public class ChatServer implements Runnable {
 	private int chatPort;
 	private boolean isRun;
 	
-	ChatServer(int chatPort){
+	ChatServer(Window parent, int chatPort){
 		this.chatClient = null;
 		this.chatPort = chatPort;
-	}
-
-	public void start(){
+		this.parentWindow = parent;
 		try{
 			this.chatServer = new ServerSocket(chatPort);
 			this.chatClient = this.chatServer.accept();
@@ -28,33 +26,11 @@ public class ChatServer implements Runnable {
 			}
 			chatIn = new DataInputStream(chatClient.getInputStream());
 			chatOut = new DataOutputStream(chatClient.getOutputStream());
+			Thread thread = new Thread(this);
+			thread.start();
 		}
 		catch(IOException e){
 			System.out.println("ERRO: " + e);
-		}
-	}
-
-	public void stop(){
-		try{
-			this.isRun = false;
-			this.chatIn = null;
-			this.chatOut = null;
-			this.chatServer.close();
-		}
-		catch(IOException e){
-			System.out.println("ERROR: " + e);
-		}
-	}
-
-	void restart(){
-		while(true){
-			if ( this.isRun ){
-				this.stop();
-			}
-			if ( !this.isRun){
-				this.start();
-				break;
-			}
 		}
 	}
 
@@ -72,9 +48,5 @@ public class ChatServer implements Runnable {
 			}
 		}
 		catch(IOException e){}
-	}
-
-	void setParentWindow(Window parent){
-		this.parentWindow = parent;
 	}
 }

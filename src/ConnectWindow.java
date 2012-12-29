@@ -13,7 +13,6 @@ public class ConnectWindow extends DFrame{
 	JButton cancelBtn;
 	Window target;
 
-
 	ConnectWindow(Window target){
 		super("Connect",300,150);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -50,7 +49,8 @@ public class ConnectWindow extends DFrame{
 		if ( this.host.equals("") || this.host == null){
 			target.AppendInfo("Please Input the Server IP.");
 		}else{
-			this.target.ConnectToServer( this.host );
+			this.target.setHost(this.host);
+			this.target.ConnectToServer(this.host);
 		}
 	}
 }

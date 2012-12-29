@@ -30,7 +30,7 @@ public class ChatClient implements Runnable{
 			this.parentWindow.AppendInfo("Connecting to server: " + this.host + ":" + this.chatPort +" completed!");
 		}
 		catch (IOException e){
-			this.parentWindow.AppendInfo("Cannot connect to the server!");
+			this.parentWindow.AppendInfo("Cannot connect to the server!" + this.host + ":" + this.chatPort);
 			this.parentWindow.changeConnState(Window.CONN_STATE_DISCONNCT);
 		}
 	}

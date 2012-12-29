@@ -10,6 +10,7 @@ public class ActionController implements ActionListener{
 	private JButton[] buttonObservers;
 	private int menuIndex;
 	private int btnIndex;
+	JFileChooser chooser;
 	
 	ActionController(Window t){
 		this.target = t;
@@ -42,6 +43,11 @@ public class ActionController implements ActionListener{
 		// Disconnect
 		if ( src == target.getFileItem(Window.FILE_ITEM_DISCONNECT) ){
 			target.DisConnect();
+		}
+
+        // Send File
+		if ( src == target.getToolItem(Window.TOOL_ITEM_SENDFILE) ){
+            target.fileClient.Send();
 		}
 
 		// Send, send info to remote server.
